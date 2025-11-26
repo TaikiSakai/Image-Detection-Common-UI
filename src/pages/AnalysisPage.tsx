@@ -9,7 +9,7 @@ export const AnalysisPage = () => {
   const { images, loadImages } = useImageLoader();
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       <Sidebar>
         <div className="flex justify-center mb-4 w-full">
           <Button className="hover:bg-black-2 shadow-elevation" onClick={loadImages}>
