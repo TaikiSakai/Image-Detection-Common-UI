@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-
+import { Button } from '@/components/common/button';
 type SidebarProps = {
   children?: ReactNode;
 };
@@ -8,8 +8,10 @@ export const Sidebar = ({ children }: SidebarProps) => {
   return (
     <div className="w-64 h-full bg-white shadow-elevation overflow-y-auto bg-black-0">
       <div className="p-4">
-        <h2 className="text-lg font-bold mb-4">読み込んだ画像</h2>
-        <div className="flex flex-col gap-2">{children}</div>
+        <div className="flex justify-center mb-4">
+          <Button className='hover:bg-black-2 shadow-elevation' onClick={() => console.log('clicked!')}>Load Images</Button>
+        </div>
+        <div className="flex flex-col gap-2 items-center">{children}</div>
       </div>
     </div>
   );
