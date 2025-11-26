@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Sidebar } from '@/components/layout';
 import { PredictionResult } from '@/components/prediction/PredictionResult';
+import { ImageCropper } from '@/components/analysis/ImageCropper';
 import { mockPredictionResponse } from '@/__mocks__/predictionData';
 import { Button } from '@/components/common/button';
 import { useImageLoader } from '@/hooks';
@@ -7,18 +9,45 @@ import { truncateText } from '@/utils';
 
 export const AnalysisPage = () => {
   const { images, loadImages } = useImageLoader();
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
+
+  const handleImageSelect = (index: number) => {
+    setSelectedImageIndex(index);
+    setCroppedImageUrl('');
+  };
+
+  const handleCropComplete = (croppedBlob: Blob) => {
+    // Convert Blob to Data URL for preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCroppedImageUrl(reader.result as string);
+
+      // TODO: Send analysis request here
+      console.log('Cropped image ready for analysis:', croppedBlob);
+    };
+    reader.readAsDataURL(croppedBlob);
+  };
 
   return (
     <div className="flex h-full">
       <Sidebar>
-        <div className="flex justify-center mb-4 w-full">
+        <div className="flex justify-center w-full">
           <Button className="hover:bg-black-2 shadow-elevation" onClick={loadImages}>
             Load Images
           </Button>
         </div>
         {images.map((image, index) => (
-          <div key={index} className="my-2 flex flex-col items-center">
-            <img src={image.dataUrl} alt={image.name} className="max-w-full h-auto" />
+          <div
+            key={index}
+            className="my-2 flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => handleImageSelect(index)}
+          >
+            <img
+              src={image.dataUrl}
+              alt={image.name}
+              className={`max-w-full h-auto ${selectedImageIndex === index ? 'ring-2 ring-blue-500' : ''}`}
+            />
             <p className="text-xs text-gray-600 mt-1 text-center" title={image.name}>
               {truncateText(image.name, 20)}
             </p>
@@ -31,12 +60,20 @@ export const AnalysisPage = () => {
             <div className="row-span-5">
               <PredictionResult predictions={mockPredictionResponse.predictions} />
             </div>
-            <div className="row-span-25 bg-black-0 p-4">
-              test
+            <div className="row-span-25">
+              {selectedImageIndex !== null ? (
+                <ImageCropper
+                  sourceImage={images[selectedImageIndex].dataUrl}
+                  onCropComplete={handleCropComplete}
+                  cropSize={{ width: 255, height: 255 }}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full rounded-lg bg-black-0 shadow-md ">
+                  Select an image from the sidebar to start cropping
+                </div>
+              )}
             </div>
-            <div className="row-span-15 bg-black-0 p-4">
-              test
-            </div>
+            <div className="row-span-15 bg-black-0 p-4">test</div>
           </div>
           <div className="grid grid-rows-[auto] gap-4 col-span-3 content-start">
             <div className="row-span-35 bg-black-0 p-4">
