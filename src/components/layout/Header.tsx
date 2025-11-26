@@ -2,7 +2,7 @@ import reactLogo from '@/assets/react.svg';
 
 export const Header = () => {
   return (
-    <header className="mb-2 py-1 shadow-elevation rounded-lg bg-black-0">
+    <header className="mb-2 py-1 shadow-elevation bg-black-0">
       <div className="flex items-center gap-10 bg-white px-6 py-3">
         <div className="flex items-center gap-4">
           <img
