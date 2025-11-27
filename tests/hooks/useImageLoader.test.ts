@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useImageLoader } from '@/hooks/useImageLoader';
 
 describe('useImageLoader', () => {
@@ -29,7 +29,12 @@ describe('useImageLoader', () => {
     });
   };
 
-  const loadFiles = (result: ReturnType<typeof renderHook<ReturnType<typeof useImageLoader>, []>>['result'], files: File[] | null) => {
+  const loadFiles = (
+    result: ReturnType<
+      typeof renderHook<ReturnType<typeof useImageLoader>, []>
+    >['result'],
+    files: File[] | null,
+  ) => {
     act(() => {
       result.current.loadImages();
     });
@@ -49,7 +54,9 @@ describe('useImageLoader', () => {
 
   beforeEach(() => {
     mockFileInput = document.createElement('input');
-    createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockFileInput);
+    createElementSpy = vi
+      .spyOn(document, 'createElement')
+      .mockReturnValue(mockFileInput);
   });
 
   afterEach(() => {
@@ -167,20 +174,25 @@ describe('useImageLoader', () => {
       { extension: 'bmp', mimeType: 'image/bmp' },
       { extension: 'jpg', mimeType: 'image/jpeg' },
       { extension: 'png', mimeType: 'image/png' },
-    ])('$extension ファイルが受け入れられる', async ({ extension, mimeType }) => {
-      const { result } = renderHook(() => useImageLoader());
+    ])(
+      '$extension ファイルが受け入れられる',
+      async ({ extension, mimeType }) => {
+        const { result } = renderHook(() => useImageLoader());
 
-      const mockFile = new File(['test'], `test.${extension}`, { type: mimeType });
-      const mockDataUrl = `data:${mimeType};base64,test`;
+        const mockFile = new File(['test'], `test.${extension}`, {
+          type: mimeType,
+        });
+        const mockDataUrl = `data:${mimeType};base64,test`;
 
-      setupFileReader(mockDataUrl);
-      loadFiles(result, [mockFile]);
+        setupFileReader(mockDataUrl);
+        loadFiles(result, [mockFile]);
 
-      await waitFor(() => {
-        expect(result.current.images).toHaveLength(1);
-      });
+        await waitFor(() => {
+          expect(result.current.images).toHaveLength(1);
+        });
 
-      expect(result.current.images[0].name).toBe(`test.${extension}`);
-    });
+        expect(result.current.images[0].name).toBe(`test.${extension}`);
+      },
+    );
   });
 });

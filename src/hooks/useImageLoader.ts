@@ -22,8 +22,13 @@ export const useImageLoader = (): UseImageLoaderReturn => {
       }
 
       const validFiles = Array.from(files).filter((file) => {
-        const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-        return ALLOWED_EXTENSIONS.includes(extension) && ALLOWED_MIME_TYPES.includes(file.type);
+        const extension = file.name
+          .toLowerCase()
+          .substring(file.name.lastIndexOf('.'));
+        return (
+          ALLOWED_EXTENSIONS.includes(extension) &&
+          ALLOWED_MIME_TYPES.includes(file.type)
+        );
       });
 
       const loadedImages = await Promise.all(
@@ -40,8 +45,8 @@ export const useImageLoader = (): UseImageLoaderReturn => {
               };
               reader.onerror = () => reject(reader.error);
               reader.readAsDataURL(file);
-            })
-        )
+            }),
+        ),
       );
 
       setImages((prev) => [...prev, ...loadedImages]);
