@@ -9,7 +9,7 @@ export const PredictionResult = ({ predictions }: PredictionResultProps) => {
   const shouldUseGrid = displayPredictions.length > 5;
 
   return (
-    <div className="w-full rounded-lg bg-black-0 p-6 shadow-md">
+    <div className="w-full h-full rounded-lg bg-black-0 p-7 shadow-md">
       <div
         className={
           shouldUseGrid
@@ -18,7 +18,7 @@ export const PredictionResult = ({ predictions }: PredictionResultProps) => {
         }
       >
         {displayPredictions.map((prediction, index) => (
-          <div key={`${prediction.className}-${index}`} className="flex flex-col gap-3 px-4 justify-center">
+          <div key={`${prediction.className}-${index}`} className="flex flex-col gap-4 px-4 justify-center">
             <div className="text-md font-medium text-gray-700 text-left">
               {prediction.className}
             </div>
