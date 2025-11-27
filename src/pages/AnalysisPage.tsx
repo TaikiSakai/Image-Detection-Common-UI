@@ -10,7 +10,7 @@ import { truncateText } from '@/utils';
 export const AnalysisPage = () => {
   const { images, loadImages } = useImageLoader();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
+  const [, setCroppedImageUrl] = useState<string>('');
 
   const handleImageSelect = (index: number) => {
     setSelectedImageIndex(index);
@@ -18,7 +18,6 @@ export const AnalysisPage = () => {
   };
 
   const handleCropComplete = (croppedBlob: Blob) => {
-    // Convert Blob to Data URL for preview
     const reader = new FileReader();
     reader.onload = () => {
       setCroppedImageUrl(reader.result as string);
@@ -56,11 +55,11 @@ export const AnalysisPage = () => {
       </Sidebar>
       <main className="flex-1 px-10 py-6 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
-          <div className="grid grid-rows-[auto] gap-4 col-span-7 content-start">
-            <div className="row-span-5">
+          <div className="grid grid-rows-6 gap-4 col-span-7 content-start">
+            <div className="row-span-1">
               <PredictionResult predictions={mockPredictionResponse.predictions} />
             </div>
-            <div className="row-span-25">
+            <div className="row-span-3">
               {selectedImageIndex !== null ? (
                 <ImageCropper
                   sourceImage={images[selectedImageIndex].dataUrl}
@@ -68,12 +67,14 @@ export const AnalysisPage = () => {
                   cropSize={{ width: 255, height: 255 }}
                 />
               ) : (
-                <div className="flex items-center justify-center h-full rounded-lg bg-black-0 shadow-md ">
+                <div className="flex h-full items-center justify-center rounded-lg bg-black-0 shadow-md ">
                   Select an image from the sidebar to start cropping
                 </div>
               )}
             </div>
-            <div className="row-span-15 bg-black-0 p-4">test</div>
+            <div className="row-span-2 flex h-full items-center justify-center rounded-lg bg-black-0 shadow-md ">
+              div
+            </div>
           </div>
           <div className="grid grid-rows-[auto] gap-4 col-span-3 content-start">
             <div className="row-span-35 bg-black-0 p-4">
