@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { mockPredictionResponse } from '@/__mocks__/predictionData';
+import { ImageCropper } from '@/components/analysis/ImageCropper';
+import { Button } from '@/components/common/button';
 import { Sidebar } from '@/components/layout';
 import { PredictionResult } from '@/components/prediction/PredictionResult';
-import { ImageCropper } from '@/components/analysis/ImageCropper';
-import { mockPredictionResponse } from '@/__mocks__/predictionData';
-import { Button } from '@/components/common/button';
 import { useImageLoader } from '@/hooks';
 import { truncateText } from '@/utils';
 
 export const AnalysisPage = () => {
   const { images, loadImages } = useImageLoader();
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null,
+  );
   const [, setCroppedImageUrl] = useState<string>('');
 
   const handleImageSelect = (index: number) => {
@@ -32,7 +34,10 @@ export const AnalysisPage = () => {
     <div className="flex h-full">
       <Sidebar>
         <div className="flex justify-center w-full">
-          <Button className="hover:bg-black-2 shadow-elevation" onClick={loadImages}>
+          <Button
+            className="hover:bg-black-2 shadow-elevation"
+            onClick={loadImages}
+          >
             Load Images
           </Button>
         </div>
@@ -47,7 +52,10 @@ export const AnalysisPage = () => {
               alt={image.name}
               className={`max-w-full h-auto ${selectedImageIndex === index ? 'ring-2 ring-blue-500' : ''}`}
             />
-            <p className="text-xs text-gray-600 mt-1 text-center" title={image.name}>
+            <p
+              className="text-xs text-gray-600 mt-1 text-center"
+              title={image.name}
+            >
               {truncateText(image.name, 20)}
             </p>
           </div>
@@ -57,7 +65,9 @@ export const AnalysisPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
           <div className="grid grid-rows-6 gap-4 col-span-7 content-start">
             <div className="row-span-1">
-              <PredictionResult predictions={mockPredictionResponse.predictions} />
+              <PredictionResult
+                predictions={mockPredictionResponse.predictions}
+              />
             </div>
             <div className="row-span-3">
               {selectedImageIndex !== null ? (

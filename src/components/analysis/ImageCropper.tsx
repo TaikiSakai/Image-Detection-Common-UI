@@ -11,7 +11,11 @@ type ImageCropperProps = {
   };
 };
 
-export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCropperProps) => {
+export const ImageCropper = ({
+  sourceImage,
+  onCropComplete,
+  cropSize,
+}: ImageCropperProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [croppedPreview, setCroppedPreview] = useState<string>('');
@@ -68,7 +72,7 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
       0,
       0,
       cropSize.width,
-      cropSize.height
+      cropSize.height,
     );
 
     const previewUrl = canvas.toDataURL();
@@ -109,7 +113,7 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
             src={croppedPreview}
             alt="Cropped preview"
             className="w-full h-full object-contain"
-            style={{ width: cropSize.width , height: cropSize.height }}
+            style={{ width: cropSize.width, height: cropSize.height }}
           />
         ) : (
           <div className="text-gray-400">Crop preview will appear here</div>
