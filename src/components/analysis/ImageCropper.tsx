@@ -50,8 +50,9 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    // Set canvas size to the original cropSize (not the display size)
+    canvas.width = cropSize.width;
+    canvas.height = cropSize.height;
     const ctx = canvas.getContext('2d');
 
     if (!ctx) {
@@ -62,19 +63,17 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
       image,
       crop.x * scaleX,
       crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
+      cropSize.width,
+      cropSize.height,
       0,
       0,
-      crop.width,
-      crop.height
+      cropSize.width,
+      cropSize.height
     );
 
-    // Update preview
     const previewUrl = canvas.toDataURL();
     setCroppedPreview(previewUrl);
 
-    // Convert to Blob and call callback
     canvas.toBlob((blob: Blob | null) => {
       if (blob) {
         onCropComplete(blob);
@@ -83,8 +82,7 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
   };
 
   return (
-    <div className="flex w-full  rounded-lg bg-black-0 shadow-md p-6">
-      {/* Source Image with Cropper */}
+    <div className="flex h-full w-full rounded-lg bg-black-0 shadow-md p-6">
       <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
         <ReactCrop
           crop={crop}
@@ -98,13 +96,13 @@ export const ImageCropper = ({ sourceImage, onCropComplete, cropSize }: ImageCro
             ref={imgRef}
             src={sourceImage}
             alt="Source"
-            className="max-w-full max-h-full"
+            className="max-w-full"
+            style={{ maxHeight: '360px' }}
             onLoad={handleImageLoad}
           />
         </ReactCrop>
       </div>
 
-      {/* Cropped Preview */}
       <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
         {croppedPreview ? (
           <img
