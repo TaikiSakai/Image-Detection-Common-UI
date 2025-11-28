@@ -1,20 +1,27 @@
 import { useState, useRef } from 'react';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { Button } from '@/components/common/button';
 
 type ImageCropperProps = {
   sourceImage: string;
   onCropComplete: (croppedBlob: Blob) => void;
+  onActionClick?: () => void;
+  actionButtonLabel?: string;
   cropSize: {
     width: number;
     height: number;
   };
+  displayMode?: 'edit' | 'view';
 };
 
 export const ImageCropper = ({
   sourceImage,
   onCropComplete,
+  onActionClick,
+  actionButtonLabel,
   cropSize,
+  displayMode = 'edit',
 }: ImageCropperProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
@@ -86,37 +93,60 @@ export const ImageCropper = ({
   };
 
   return (
-    <div className="flex h-full w-full rounded-lg bg-black-0 shadow-md p-6">
+    <div className="flex h-full w-full rounded-lg bg-black-0 shadow-md p-6 gap-4">
       <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-        <ReactCrop
-          crop={crop}
-          onChange={(c) => setCrop(c)}
-          onComplete={(c) => handleCropComplete(c)}
-          aspect={1}
-          locked
-          ruleOfThirds
-        >
+        {displayMode === 'edit' ? (
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            onComplete={(c) => handleCropComplete(c)}
+            aspect={1}
+            locked
+            ruleOfThirds
+          >
+            <img
+              ref={imgRef}
+              src={sourceImage}
+              alt="Source"
+              className="max-w-full"
+              style={{ maxHeight: '360px' }}
+              onLoad={handleImageLoad}
+            />
+          </ReactCrop>
+        ) : (
           <img
-            ref={imgRef}
             src={sourceImage}
             alt="Source"
             className="max-w-full"
             style={{ maxHeight: '360px' }}
-            onLoad={handleImageLoad}
           />
-        </ReactCrop>
+        )}
       </div>
 
-      <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-        {croppedPreview ? (
-          <img
-            src={croppedPreview}
-            alt="Cropped preview"
-            className="w-full h-full object-contain"
-            style={{ width: cropSize.width, height: cropSize.height }}
-          />
-        ) : (
-          <div className="text-gray-400">Crop preview will appear here</div>
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
+          {croppedPreview ? (
+            <img
+              src={croppedPreview}
+              alt="Cropped preview"
+              className="w-full h-full object-contain"
+              style={{ width: cropSize.width, height: cropSize.height }}
+            />
+          ) : (
+            <div className="text-gray-400">Crop preview will appear here</div>
+          )}
+        </div>
+
+        {onActionClick && actionButtonLabel && displayMode === 'edit' && (
+          <div className="flex justify-center">
+            <Button
+              onClick={onActionClick}
+              disabled={!croppedPreview}
+              className="hover:bg-blue-600"
+            >
+              {actionButtonLabel}
+            </Button>
+          </div>
         )}
       </div>
     </div>
