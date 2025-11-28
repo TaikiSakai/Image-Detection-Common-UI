@@ -13,6 +13,7 @@ type ImageCropperProps = {
     height: number;
   };
   displayMode?: 'edit' | 'view';
+  croppedImageUrl?: string;
 };
 
 export const ImageCropper = ({
@@ -22,10 +23,13 @@ export const ImageCropper = ({
   actionButtonLabel,
   cropSize,
   displayMode = 'edit',
+  croppedImageUrl,
 }: ImageCropperProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [croppedPreview, setCroppedPreview] = useState<string>('');
+
+  const displayedCroppedImage = croppedImageUrl || croppedPreview;
 
   const handleImageLoad = () => {
     const image = imgRef.current;
@@ -125,9 +129,9 @@ export const ImageCropper = ({
 
       <div className="flex-1 flex flex-col">
         <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-          {croppedPreview ? (
+          {displayedCroppedImage ? (
             <img
-              src={croppedPreview}
+              src={displayedCroppedImage}
               alt="Cropped preview"
               className="w-full h-full object-contain"
               style={{ width: cropSize.width, height: cropSize.height }}
@@ -141,7 +145,7 @@ export const ImageCropper = ({
           <div className="flex justify-center">
             <Button
               onClick={onActionClick}
-              disabled={!croppedPreview}
+              disabled={!displayedCroppedImage}
               className="hover:bg-blue-600"
             >
               {actionButtonLabel}
