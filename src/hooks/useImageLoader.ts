@@ -38,6 +38,7 @@ export const useImageLoader = (): UseImageLoaderReturn => {
               const reader = new FileReader();
               reader.onload = () => {
                 resolve({
+                  id: crypto.randomUUID(),
                   file,
                   dataUrl: reader.result as string,
                   name: file.name,

@@ -95,11 +95,12 @@ describe('useImageLoader', () => {
       expect(result.current.images).toHaveLength(1);
     });
 
-    expect(result.current.images[0]).toEqual({
+    expect(result.current.images[0]).toMatchObject({
       file: mockFile,
       dataUrl: mockDataUrl,
       name: 'test.jpg',
     });
+    expect(result.current.images[0].id).toBeDefined();
   });
 
   it('無効なファイルタイプがフィルタリングされる', async () => {
