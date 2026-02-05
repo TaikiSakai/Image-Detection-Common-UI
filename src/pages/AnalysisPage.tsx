@@ -115,7 +115,7 @@ export const AnalysisPage = () => {
                 </div>
               )}
             </div>
-            <div className="row-span-2 overflow-hidden">
+            <div className="row-span-2 min-w-0">
               <AnalysisResultList
                 results={results}
                 images={images}

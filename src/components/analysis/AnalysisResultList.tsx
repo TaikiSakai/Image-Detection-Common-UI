@@ -24,8 +24,8 @@ export const AnalysisResultList = ({
   };
 
   return (
-    <div className="h-full w-full rounded-lg shadow-md bg-black-0 p-4">
-      <div className="overflow-x-auto h-full">
+    <div className="h-full w-full rounded-lg shadow-md bg-black-0">
+      <div className="overflow-x-auto h-full p-4">
         <div className="flex gap-4 h-full min-w-min">
           {results.length === 0 ? (
             <div className="w-full text-center text-gray-400 py-8">
