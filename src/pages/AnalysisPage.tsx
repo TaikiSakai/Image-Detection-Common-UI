@@ -1,22 +1,30 @@
 import { useState } from 'react';
 import { mockPredictionResponse } from '@/__mocks__/predictionData';
-import { ImageCropper } from '@/components/analysis/ImageCropper';
+import { AnalysisResultList, ImageCropper } from '@/components/analysis';
 import { Button } from '@/components/common/button';
 import { Sidebar } from '@/components/layout';
 import { PredictionResult } from '@/components/prediction/PredictionResult';
-import { useImageLoader } from '@/hooks';
+import { useAnalysisResults, useImageLoader } from '@/hooks';
+import type { AnalysisResult, Prediction } from '@/types';
 import { truncateText } from '@/utils';
 
 export const AnalysisPage = () => {
   const { images, loadImages } = useImageLoader();
+  const { results, addResult } = useAnalysisResults();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null,
   );
-  const [, setCroppedImageUrl] = useState<string>('');
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
+  const [currentPredictions, setCurrentPredictions] = useState<Prediction[]>(
+    mockPredictionResponse.predictions,
+  );
+  const [displayMode, setDisplayMode] = useState<'edit' | 'view'>('edit');
 
   const handleImageSelect = (index: number) => {
     setSelectedImageIndex(index);
     setCroppedImageUrl('');
+    setCurrentPredictions(mockPredictionResponse.predictions);
+    setDisplayMode('edit');
   };
 
   const handleCropComplete = (croppedBlob: Blob) => {
@@ -28,6 +36,29 @@ export const AnalysisPage = () => {
       console.log('Cropped image ready for analysis:', croppedBlob);
     };
     reader.readAsDataURL(croppedBlob);
+  };
+
+  const handleSaveResult = () => {
+    if (selectedImageIndex === null || !croppedImageUrl) {
+      return;
+    }
+
+    const sourceImageId = images[selectedImageIndex].id;
+    addResult(sourceImageId, croppedImageUrl, currentPredictions);
+  };
+
+  const handleResultClick = (result: AnalysisResult) => {
+    const imageIndex = images.findIndex(
+      (img) => img.id === result.sourceImageId,
+    );
+    if (imageIndex === -1) {
+      return;
+    }
+
+    setSelectedImageIndex(imageIndex);
+    setCroppedImageUrl(result.croppedImageUrl);
+    setCurrentPredictions(result.predictions);
+    setDisplayMode('view');
   };
 
   return (
@@ -65,16 +96,18 @@ export const AnalysisPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
           <div className="grid grid-rows-6 gap-4 col-span-7 content-start">
             <div className="row-span-1">
-              <PredictionResult
-                predictions={mockPredictionResponse.predictions}
-              />
+              <PredictionResult predictions={currentPredictions} />
             </div>
             <div className="row-span-3">
               {selectedImageIndex !== null ? (
                 <ImageCropper
                   sourceImage={images[selectedImageIndex].dataUrl}
                   onCropComplete={handleCropComplete}
+                  onActionClick={handleSaveResult}
+                  actionButtonLabel="Save Result"
                   cropSize={{ width: 255, height: 255 }}
+                  displayMode={displayMode}
+                  croppedImageUrl={croppedImageUrl}
                 />
               ) : (
                 <div className="flex h-full items-center justify-center rounded-lg bg-black-0 shadow-md ">
@@ -82,8 +115,12 @@ export const AnalysisPage = () => {
                 </div>
               )}
             </div>
-            <div className="row-span-2 flex h-full items-center justify-center rounded-lg bg-black-0 shadow-md ">
-              div
+            <div className="row-span-2 min-w-0">
+              <AnalysisResultList
+                results={results}
+                images={images}
+                onResultClick={handleResultClick}
+              />
             </div>
           </div>
           <div className="grid grid-rows-[auto] gap-4 col-span-3 content-start">

@@ -1,4 +1,5 @@
 export type LoadedImage = {
+  id: string;
   file: File;
   dataUrl: string;
   name: string;
