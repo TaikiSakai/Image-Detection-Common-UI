@@ -45,7 +45,7 @@ export const AnalysisResultList = ({
                     <img
                       src={result.croppedImageUrl}
                       alt={`Result for ${getImageName(result.sourceImageId)}`}
-                      className="w-full h-48 object-cover rounded-md mb-2"
+                      className="h-35 w-35 object-cover rounded-md mb-2 mx-auto"
                     />
                     <div className="space-y-1">
                       <p
